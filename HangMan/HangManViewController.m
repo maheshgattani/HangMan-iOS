@@ -12,6 +12,7 @@
 @property NSInteger faults;
 @property (weak, nonatomic) IBOutlet UILabel *word;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+@property (strong, nonatomic) NSMutableArray *doneChars;
 @property (nonatomic) NSInteger solved;
 @end
 
@@ -21,6 +22,7 @@
 @synthesize word = _word;
 @synthesize solved = _solved;
 @synthesize image = _image;
+@synthesize doneChars = _doneChars;
 
 - (HangManMind*) mind
 {
@@ -58,6 +60,8 @@
     self.faults = 0;
     self.solved = 0;
 
+    self.doneChars = [[NSMutableArray alloc] init];
+    [self.doneChars removeAllObjects];
     NSMutableString* s = [NSMutableString stringWithFormat:@""];
     NSString* imageName = [NSString stringWithFormat:@"hangman0.jpg"];
     [self.image setImage:[UIImage imageNamed:imageName]]; 
@@ -77,7 +81,13 @@
 
 - (IBAction)characterPressed:(UIButton *)sender 
 {
-    NSString *character = [sender currentTitle];        
+    NSString *character = [sender currentTitle];   
+    
+    if([self.doneChars containsObject:character]){
+        return;
+    }
+            
+    [self.doneChars addObject:character];
     NSMutableArray *retval = [self.mind getPositionsOfWord:character];
     NSLog(@"%d", [retval count]);
     NSString* label = [self.word text];
